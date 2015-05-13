@@ -18,7 +18,7 @@ pkl files are saved in pkl/ subdirectory indexed by time
 from __future__ import print_function
 from __future__ import absolute_import
 
-import numpy
+import numpy,pdb
 
 from .utility_functions import index_to_zyx, expand_indexes
 
@@ -36,10 +36,10 @@ def expand_cloudlet(cloudlet, indexes, MC):
 
     # Expand the cloudlet indexes into their nearest neighbours
     expanded_cloudlet = expand_indexes(cloudlet, MC)
+    #pdb.set_trace()
 
     # Find the mask values of the expanded indexes
     mask = indexes[expanded_cloudlet]
-
     # Select the expanded cloudlet indexes that may be expanded into
     new_points = expanded_cloudlet[mask]
 

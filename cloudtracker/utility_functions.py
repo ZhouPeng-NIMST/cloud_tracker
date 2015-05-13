@@ -1,4 +1,4 @@
-import numpy
+import numpy,pdb
 
 #---------------------------------
 
@@ -12,7 +12,9 @@ def index_to_zyx(index, MC):
 
 def zyx_to_index(z, y, x, MC):
     ny, nx = MC['ny'], MC['nx']
-    return ny*nx*z + nx*y + x
+    #pdb.set_trace()
+    indices=(ny*nx*z + nx*y + x).astype(numpy.int32)
+    return indices
 
 #---------------------------------
 
