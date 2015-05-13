@@ -1,4 +1,5 @@
-import numpy, ConfigParser, glob, os
+import numpy,  glob, os
+from configparser import ConfigParser
 
 config = ConfigParser.RawConfigParser()
 config.read('config.cfg')

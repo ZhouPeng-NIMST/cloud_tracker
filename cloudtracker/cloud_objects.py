@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import numpy
-from utility_functions import expand_indexes, \
+from .utility_functions import expand_indexes, \
         index_to_zyx, find_halo, calc_distance
 
 def calc_com(mask, MC):
