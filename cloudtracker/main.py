@@ -53,15 +53,13 @@ def main(MC, save_all=True):
     cloudlet_items = ['core', 'condensed', 'plume', 'u_condensed', 'v_condensed', \
         'w_condensed', 'u_plume', 'v_plume', 'w_plume']
 
-    filelist = glob.glob('{}/*nc'.format(MC['tracking_directory'])
-    pha_logger.info('inside main, filelist has {} items'.format(len(filelist))        
+    filelist = glob.glob('{}/*nc'.format(MC['tracking_directory']))
+    pha_logger.info('inside main, filelist has {} items'.format(len(filelist)))        
     filelist.sort()
 
     #if (len(filelist) != nt):
     #    raise Exception("Only %d files found, nt=%d files expected" % (len(filelist), nt))
 
-    if not os.path.exists('pkl'):
-        os.mkdir('pkl')
     if not os.path.exists('output'):
         os.mkdir('output')
     # TEST: Data folder for testing
