@@ -19,7 +19,7 @@ for option in ('case_name', 'input_directory', 'data_directory', 'sam_directory'
 
 model_config['do_entrainment'] = config.getboolean('modelconfig', 'do_entrainment')
 
-pdb.set_trace()
+#pdb.set_trace()
 
 
 nz, ny, nx = model_config['nz'], model_config['ny'], model_config['nx']

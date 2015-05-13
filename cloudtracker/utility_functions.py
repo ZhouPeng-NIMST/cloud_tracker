@@ -1,13 +1,16 @@
 import numpy,pdb
+import logging
 
 #---------------------------------
-
+pha_logger=logging.getLogger('pha_debug')
 def index_to_zyx(index, MC):
     ny, nx = MC['ny'], MC['nx']
-    z = index / (ny*nx)
+    z = (index / (ny*nx)).astype(numpy.int32)
     index = index % (ny*nx)
-    y = index / nx
+    y = (index / nx).astype(numpy.int32)
     x = index % nx
+    #pdb.set_trace()
+    #pha_logger.info('{} {} {}'.format(x,y,z))
     return numpy.array((z, y, x))
 
 def zyx_to_index(z, y, x, MC):
