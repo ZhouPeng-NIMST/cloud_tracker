@@ -1,7 +1,7 @@
 import numpy,  glob, os
-from configparser import ConfigParser
+from configparser import RawConfigParser
 
-config = ConfigParser.RawConfigParser()
+config = RawConfigParser()
 config.read('config.cfg')
 model_config = {}
 

@@ -1,7 +1,5 @@
-#!/usr/bin/env python
 #Runtime (690,130,128,128): ?
 
-import cPickle as pickle
 import h5py
 import gc
 import networkx

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import numpy
 from .utility_functions import expand_indexes, \
         index_to_zyx, find_halo, calc_distance
@@ -22,17 +20,17 @@ def calc_com(mask, MC):
     if numpy.var(y2 - y2m) > numpy.var(y1 - y1m):
         y = y1m
     else:
-	y = (y2m + .5)%ny - .5
+        y = (y2m + .5)%ny - .5
 
     if numpy.var(y2 - y2m) > numpy.var(y1 - y1m):
         y = y1m
     else:
-	y = (y2m + .5)%ny - .5
+        y = (y2m + .5)%ny - .5
 
     if numpy.var(x2 - x2m) > numpy.var(x1 - x1m):
         x = x1m
     else:
-	x = (x2m + .5)%nx - .5
+        x = (x2m + .5)%nx - .5
 
     return numpy.array(([z], [y], [x]))
 

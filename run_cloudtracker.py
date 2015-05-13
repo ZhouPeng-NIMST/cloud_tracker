@@ -11,7 +11,7 @@ from multiprocessing import Pool
 PROC = 1
 
 from  .lib import model_param as mc
-from  .cloud_tracker.cloudtracker import main 
+from  .cloudtracker.main import main
 
 # Default working directory for ent_analysis package
 cwd = os.getcwd()
@@ -31,7 +31,7 @@ def wrapper(module_name, script_name, function_name, filelist):
     
 def run_cloudtracker():
     # Change the working directory for cloudtracker
-    os.chdir('%s/cloudtracker/' % (cwd))
+    #os.chdir('%s/cloudtracker/' % (cwd))
     model_config = mc.model_config
     
     model_config['nt'] = len(glob.glob('%s/tracking/*.nc' % (mc.data_directory)))
