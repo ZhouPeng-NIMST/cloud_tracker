@@ -1,18 +1,26 @@
 import numpy,  glob, os
 from configparser import RawConfigParser
+import logging, pdb
 
 config = RawConfigParser()
-config.read('config.cfg')
+cwd=os.getcwd()
+config_file='{}/config.cfg'.format(cwd)
+pha_logger=logging.getLogger('pha_debug')
+pha_logger.info('inside model_param: cwd is: '.format(config_file))
+config.read(config_file)
 model_config = {}
 
 for option in ('ug', 'vg', 'dt', 'dz', 'dy', 'dx'):
-	model_config[option] = config.getfloat('modelconfig', option)
+    model_config[option] = config.getfloat('modelconfig', option)
 for option in ('nz', 'ny', 'nx'):
-	model_config[option] = config.getint('modelconfig', option)
+    model_config[option] = config.getint('modelconfig', option)
 for option in ('case_name', 'input_directory', 'data_directory', 'sam_directory'):
-	model_config[option] = config.get('modelconfig', option)
+    model_config[option] = config.get('modelconfig', option)
 
 model_config['do_entrainment'] = config.getboolean('modelconfig', 'do_entrainment')
+
+pdb.set_trace()
+
 
 nz, ny, nx = model_config['nz'], model_config['ny'], model_config['nx']
 dt, dx, dy, dz = model_config['dt'], model_config['dz'], model_config['dy'], model_config['dz']
@@ -26,25 +34,24 @@ input_directory = model_config['input_directory']
 data_directory = model_config['data_directory']
 sam_directory = model_config['sam_directory']
 
-nt = len(glob.glob('%s/%s_[!A-Z]*.bin3D' % (input_directory, case_name)))
 
 def get_stat():
-	filename = glob.iglob(data_directory + '/*_stat.nc').next()
-	return filename
+    filename = glob.iglob(data_directory + '/*_stat.nc').next()
+    return filename
 
 def time_picker(file_name):
-	f = file_name.split('/')[-1].split('_')
-	
-	if(f[1] == 'CORE'):
-		filelist = glob.glob('%s/core_entrain/*.nc' % data_directory)
-	elif (f[1] == 'CLOUD'):
-		filelist = glob.glob('%s/condensed_entrain/*.nc' % data_directory)
-	else:
-		filelist = glob.glob('%s/variables/*.nc' % data_directory)
-	
-	filelist.sort()
-	index = filelist.index(file_name)
-	return index
+    f = file_name.split('/')[-1].split('_')
+    
+    if(f[1] == 'CORE'):
+        filelist = glob.glob('%s/core_entrain/*.nc' % data_directory)
+    elif (f[1] == 'CLOUD'):
+        filelist = glob.glob('%s/condensed_entrain/*.nc' % data_directory)
+    else:
+        filelist = glob.glob('%s/variables/*.nc' % data_directory)
+    
+    filelist.sort()
+    index = filelist.index(file_name)
+    return index
 
 def index_to_zyx(index):
     z = index / (ny*nx)

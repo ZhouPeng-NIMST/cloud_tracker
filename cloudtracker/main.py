@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from __future__ import print_function
 from __future__ import absolute_import
 
@@ -7,6 +5,8 @@ import numpy
 import glob
 import sys, os, gc
 import h5py
+import logging
+import pdb
 
 from .generate_cloudlets import generate_cloudlets
 from .cluster_cloudlets import cluster_cloudlets
@@ -20,6 +20,9 @@ except:
 		from netCDF3 import Dataset
 	except:
 		from pupynere import netcdf_file as Dataset
+
+pha_logger=logging.getLogger('pha_debug')
+
 
 #-------------------
 
@@ -50,7 +53,8 @@ def main(MC, save_all=True):
     cloudlet_items = ['core', 'condensed', 'plume', 'u_condensed', 'v_condensed', \
         'w_condensed', 'u_plume', 'v_plume', 'w_plume']
 
-    filelist = glob.glob('%s/*' % input_dir)
+    filelist = glob.glob('{}/*nc'.format(MC['tracking_directory'])
+    pha_logger.info('inside main, filelist has {} items'.format(len(filelist))        
     filelist.sort()
 
     #if (len(filelist) != nt):
@@ -85,7 +89,9 @@ def main(MC, save_all=True):
         gc.collect() # NOTE: Force garbage-collection at the end of loop
     
 #----cluster----
+    pha_logger.info('inside main')
     print("Making clusters")
+    pdb.set_trace()
 
     # FIXME: cluster save/load does not work properly
     cluster_cloudlets(MC)
