@@ -7,6 +7,7 @@ import sys, os, gc
 import h5py
 import logging
 import pdb
+import cPickle as pickle
 
 from .generate_cloudlets import generate_cloudlets
 from .cluster_cloudlets import cluster_cloudlets
@@ -98,7 +99,16 @@ def main(MC, save_all=True):
 
     print("make graph")
 
-    cloud_graphs, cloud_noise = make_graph(MC)
+    do_graph=False
+    if do_graph:
+        cloud_graphs, cloud_noise = make_graph(MC)
+    else:
+        print('skipping make_graph')
+        with open('{}/pkl/cloud_graphs.pkl'.format(input_dir),'r') as cg,\
+             open('{}/pkl/cloud_noise.pkl'.format(input_dir),'r') as cn:
+            cloud_graphs=pickle.load(cg)
+            cloud_noise=pickle.load(cn)
+        
     
     print("\tFound %d clouds" % len(cloud_graphs))
 

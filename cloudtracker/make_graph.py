@@ -3,14 +3,15 @@
 import h5py
 import gc
 import networkx
-import pickle
+import cPickle as pickle
 import os
+import numpy as np
 
 
-def full_output(cloud_times, cloud_graphs, merges, splits, MC):
+def full_output(cloud_times, cloud_graphs,cloud_noise, merges, splits, MC):
     cloud_times = tuple(cloud_times)
 
-    pickle.dump(cloud_times, open('pkl/cloud_times.pkl','wb'))
+    pickle.dump(cloud_times, open('pkl/cloud_times.pkl','wb'),protocol=2)
 
     n = 0
     clouds = {}
@@ -44,7 +45,9 @@ def full_output(cloud_times, cloud_graphs, merges, splits, MC):
         clouds[n] = events
         n = n + 1
 
-    pickle.dump(clouds, open('pkl/graph_events.pkl', 'wb'))
+    pickle.dump(clouds, open('pkl/graph_events.pkl', 'wb'),protocol=2)
+    pickle.dump(cloud_noise, open('pkl/cloud_noise.pkl', 'wb'),protocol=2)
+    pickle.dump(cloud_graphs, open('pkl/cloud_graphs.pkl', 'wb'),protocol=2)
 
     
 
@@ -59,7 +62,9 @@ def make_graph(MC):
 
     for t in range(MC['nt']):
         with h5py.File('hdf5/clusters_%08g.h5' % t, 'r') as clusters:
-            for id in clusters:
+            for count,id in enumerate(clusters):
+                if np.mod(count,500)==0:
+                    print('in make_graph timestep {}, processing id {}'.format(t,id))
                 # Make dictionaries of every split and every merge event that occurs
                 # in a cluster's lifecycle
                 m_conns = set(clusters['%s/merge_connections' % id])
@@ -165,7 +170,7 @@ def make_graph(MC):
         pkldir='{}/{}'.format(os.getcwd(),'pkl')
         if not os.path.exists(pkldir):
             os.makedirs(pkldir)
-        full_output(cloud_times, cloud_graphs, merges, splits, MC)
+        full_output(cloud_times, cloud_graphs, cloud_noise, merges, splits, MC)
 
     return cloud_graphs, cloud_noise
 

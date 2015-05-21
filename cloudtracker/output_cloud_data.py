@@ -121,7 +121,9 @@ def save_text_file(clouds, t, MC):
 def output_cloud_data(cloud_graphs, cloud_noise, t, MC):
 
     print('Timestep:', t)
-
+    if t < 55:
+        print('skipping timestep {}'.format(t))
+        return None
     # Load the cluster zyx data for the current time
     cluster = {}
     clusters = {}
@@ -138,6 +140,7 @@ def output_cloud_data(cloud_graphs, cloud_noise, t, MC):
             for var in items:
                 cluster[var] = cluster_dict['%s/%s' % (id, var)][...]
             clusters[key] = cluster
+    print('done with clusters')
 
     clouds = {}
     id = 0
@@ -146,16 +149,17 @@ def output_cloud_data(cloud_graphs, cloud_noise, t, MC):
         # that all belong to subgraph 'id'
         nodes = [item for item in subgraph.nodes() 
                       if item[:8] == ('%08g' % t)]
-                      
+        print('processing nodes: total ={}'.format(len(nodes)))              
         if nodes:
             # Pack them into a single cloud object
             core = []
             condensed = []
             plume = []
-            for node in nodes:
+            for nodecount,node in enumerate(nodes):
                 core.append(clusters[node]['core'])
                 condensed.append(clusters[node]['condensed'])
                 plume.append(clusters[node]['plume'])
+                print('processing node: {}'.format(nodecount))
                 
             cloud = {'core': numpy.hstack(core),
                      'condensed': numpy.hstack(condensed),
