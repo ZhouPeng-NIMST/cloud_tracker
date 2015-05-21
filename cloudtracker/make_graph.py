@@ -3,8 +3,9 @@
 import h5py
 import gc
 import networkx
+import pickle
+import os
 
-full_output=False
 
 def full_output(cloud_times, cloud_graphs, merges, splits, MC):
     cloud_times = tuple(cloud_times)
@@ -157,8 +158,14 @@ def make_graph(MC):
     cloud_graphs.sort()
     cloud_graphs.reverse()
     cloud_graphs = [item[1] for item in cloud_graphs]
+
+    do_output=True
     
-    if full_output: full_output(cloud_times, cloud_graphs, merges, splits, MC)
+    if do_output:
+        pkldir='{}/{}'.format(os.getcwd(),'pkl')
+        if not os.path.exists(pkldir):
+            os.makedirs(pkldir)
+        full_output(cloud_times, cloud_graphs, merges, splits, MC)
 
     return cloud_graphs, cloud_noise
 

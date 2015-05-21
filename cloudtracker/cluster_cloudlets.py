@@ -345,7 +345,7 @@ def save_clusters(clusters, t):
     new_clusters = {}
 
     with h5py.File('hdf5/clusters_%08g.h5' % t, "w") as f:
-        # TODO: Parallelize 
+        # TODO: Parallelize
         for id, clust in clusters.iteritems():
             grp = f.create_group(str(id))
 
@@ -356,6 +356,7 @@ def save_clusters(clusters, t):
             dset = grp.create_dataset('core', data=clust.core_mask())
             dset = grp.create_dataset('condensed', data=clust.condensed_mask())
             dset = grp.create_dataset('plume', data=clust.plume_mask())
+    print('through cluster write at {}'.format(t))
     # NOTE: Ignore cluster_objects
     #cPickle.dump(clusters, open('pkl/cluster_objects_%08g.pkl' % t, 'wb'))
 
