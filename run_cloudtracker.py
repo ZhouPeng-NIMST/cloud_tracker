@@ -6,14 +6,17 @@ import site
 import logging,pdb
 logging.basicConfig()
 
+home_dir=os.getenv('HOME')
+site.addsitedir('%s/repos' % home_dir)
+
 
 # Multiprocessing modules
 import multiprocessing as mp
 from multiprocessing import Pool
 PROC = 1
 
-from  .lib import model_param as mc
-from  .cloudtracker.main import main
+from  cloud_tracker.lib import model_param as mc
+from  cloud_tracker.cloudtracker.main import main
 
 # Default working directory for ent_analysis package
 cwd = os.getcwd()
