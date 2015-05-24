@@ -68,7 +68,7 @@ def main(MC, save_all=True):
         os.mkdir('hdf5')
 
     ## # TODO: Parallelize file access (multiprocessing)
-    do_cloudlets=False
+    do_cloudlets=True
     
     if do_cloudlets:
         for n, filename in enumerate(filelist):
@@ -96,7 +96,7 @@ def main(MC, save_all=True):
     #pdb.set_trace()
 
     # FIXME: cluster save/load does not work properly
-    do_cluster= False
+    do_cluster= True
     if do_cluster:
         cluster_cloudlets(MC)
 
@@ -104,7 +104,7 @@ def main(MC, save_all=True):
 
     print("make graph")
     output_dir=MC['output_directory']
-    do_graph=False
+    do_graph=True
     if do_graph:
         cloud_graphs, cloud_noise = make_graph(MC)
     else:
