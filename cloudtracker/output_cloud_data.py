@@ -10,8 +10,8 @@ import networkx
 import numpy
 from .utility_functions import zyx_to_index, index_to_zyx, calc_radii, \
     expand_indexes
-import sys, gc
-#import scipy.io
+import sys, gc,pdb
+
 
 def calc_shell(index, MC):
     # Expand the cloud points outward
@@ -132,14 +132,16 @@ def output_cloud_data(cloud_graphs, cloud_noise, t, MC):
     with h5py.File('hdf5/clusters_%08g.h5' % t, 'r') as cluster_dict:
         for id in cluster_dict:
             key = "%08g|%08g" % (t, int(id))
-
-            #clusters[key] = dict(zip(items, numpy.array([cluster_dict['%s/%s' % (id, 'core')][...], \
-            #    cluster_dict['%s/%s' % (id, 'condensed')][...], cluster_dict['%s/%s' % (id, 'plume')][...]])))
+            try:
+                clusters[key] = dict(zip(items, numpy.array([cluster_dict['%s/%s' % (id, 'core')][...], \
+                    cluster_dict['%s/%s' % (id, 'condensed')][...], cluster_dict['%s/%s' % (id, 'plume')][...]])))
+            except KeyError:
+                pdb.set_trace()
 
             # TEST: ensure the above clusters dict is the same
-            for var in items:
-                cluster[var] = cluster_dict['%s/%s' % (id, var)][...]
-            clusters[key] = cluster
+            ## for var in items:
+            ##     cluster[var] = cluster_dict['%s/%s' % (id, var)][...]
+            ## clusters[key] = cluster
     print('done with clusters')
 
     clouds = {}
@@ -156,11 +158,14 @@ def output_cloud_data(cloud_graphs, cloud_noise, t, MC):
             condensed = []
             plume = []
             for nodecount,node in enumerate(nodes):
-                core.append(clusters[node]['core'])
-                condensed.append(clusters[node]['condensed'])
-                plume.append(clusters[node]['plume'])
+                try:
+                    core.append(clusters[node]['core'])
+                    condensed.append(clusters[node]['condensed'])
+                    plume.append(clusters[node]['plume'])
+                except KeyError:
+                    print('key error with: ',node)
+                    pass
                 print('processing node: {}'.format(nodecount))
-                
             cloud = {'core': numpy.hstack(core),
                      'condensed': numpy.hstack(condensed),
                      'plume': numpy.hstack(plume)}

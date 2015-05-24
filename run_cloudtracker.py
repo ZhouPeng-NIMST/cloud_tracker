@@ -35,6 +35,7 @@ def wrapper(module_name, script_name, function_name, filelist):
     pool.map(fn, filelist)
     
 def run_cloudtracker():
+    print("mc here: ",dir(mc))
     try:
         pha_logger=logging.getLogger('pha_debug')
         pha_logger.setLevel(logging.DEBUG)
@@ -43,7 +44,7 @@ def run_cloudtracker():
         pha_logger.info('start logging')
         model_config = mc.model_config
 
-        model_config['tracking_directory'] = mc.input_directory + '/tracking'
+        model_config['tracking_directory'] = mc.data_directory + '/tracking'
         model_config['nt'] = len(glob.glob('{}/*.nc'.format(model_config['tracking_directory'])))
         pha_logger.info('found {} tracking files in {}'.format(model_config['nt'],
                                                                model_config['tracking_directory']))

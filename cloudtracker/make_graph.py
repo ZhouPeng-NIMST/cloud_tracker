@@ -10,7 +10,8 @@ import numpy as np
 
 def full_output(cloud_times, cloud_graphs,cloud_noise, merges, splits, MC):
     cloud_times = tuple(cloud_times)
-
+    if not os.path.exists('pkl'):
+        os.mkdir('pkl')
     pickle.dump(cloud_times, open('pkl/cloud_times.pkl','wb'),protocol=2)
 
     n = 0
@@ -61,7 +62,7 @@ def make_graph(MC):
     splits = {}
 
     for t in range(MC['nt']):
-        with h5py.File('hdf5/clusters_%08g.h5' % t, 'r') as clusters:
+        with h5py.File('{}/hdf5/clusters_{:08g}.h5'.format(MC['data_directory'], t), 'r') as clusters:
             for count,id in enumerate(clusters):
                 if np.mod(count,500)==0:
                     print('in make_graph timestep {}, processing id {}'.format(t,id))

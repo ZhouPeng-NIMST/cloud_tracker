@@ -323,7 +323,7 @@ def load_cloudlets(t, MC):
     cloudlet_items = ['core', 'condensed', 'plume', 'u_condensed', 'v_condensed', \
         'w_condensed', 'u_plume', 'v_plume', 'w_plume']
 
-    with h5py.File('hdf5/cloudlets_%08g.h5' % t, 'r') as cloudlets:
+    with h5py.File('{:s}/hdf5/cloudlets_{:08g}.h5'.format(MC['output_directory'],t), 'r') as cloudlets:
         cloudlet = {}
         result = []
         n = 0
@@ -341,10 +341,10 @@ def load_cloudlets(t, MC):
 
     return result
 
-def save_clusters(clusters, t):
+def save_clusters(clusters, t, MC):
     new_clusters = {}
 
-    with h5py.File('hdf5/clusters_%08g.h5' % t, "w") as f:
+    with h5py.File('{:s}/hdf5/clusters_{:08g}.h5'.format(MC['output_directory'],t), "w") as f:
         # TODO: Parallelize
         for id, clust in clusters.iteritems():
             grp = f.create_group(str(id))
@@ -367,7 +367,7 @@ def cluster_cloudlets(MC):
     make_spatial_cloudlet_connections( cloudlets, MC )
     new_clusters = create_new_clusters(cloudlets, {}, 0, MC)
     print("\t%d clusters" % len(new_clusters))
-    save_clusters(new_clusters, 0)
+    save_clusters(new_clusters, 0, MC)
         
     for t in range(1, MC['nt']):
         print("cluster cloudlets; time step: %d" % t)
@@ -383,7 +383,7 @@ def cluster_cloudlets(MC):
         new_clusters = make_clusters(cloudlets, old_clusters, MC)
         print("\t%d clusters" % len(new_clusters))
 
-        save_clusters(new_clusters, t)
+        save_clusters(new_clusters, t, MC)
 
 if __name__ == "__main__":
     main()

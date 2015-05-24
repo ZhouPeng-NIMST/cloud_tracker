@@ -6,7 +6,7 @@ config = RawConfigParser()
 cwd=os.getcwd()
 config_file='{}/config.cfg'.format(cwd)
 pha_logger=logging.getLogger('pha_debug')
-pha_logger.info('inside model_param: cwd is: '.format(config_file))
+print('inside model_param: config.cfg is: '.format(config_file))
 config.read(config_file)
 model_config = {}
 
@@ -14,10 +14,11 @@ for option in ('ug', 'vg', 'dt', 'dz', 'dy', 'dx'):
     model_config[option] = config.getfloat('modelconfig', option)
 for option in ('nz', 'ny', 'nx'):
     model_config[option] = config.getint('modelconfig', option)
-for option in ('case_name', 'input_directory', 'data_directory', 'sam_directory'):
+for option in ('case_name','output_directory', 'data_directory', 'sam_directory'):
     model_config[option] = config.get('modelconfig', option)
 
 model_config['do_entrainment'] = config.getboolean('modelconfig', 'do_entrainment')
+print('through model_param: ',repr(model_config.items()))
 
 #pdb.set_trace()
 
@@ -30,10 +31,9 @@ ug, vg = model_config['ug'], model_config['vg']
 case_name = model_config['case_name']
 do_entrainment = model_config['do_entrainment']
 
-input_directory = model_config['input_directory']
 data_directory = model_config['data_directory']
 sam_directory = model_config['sam_directory']
-
+output_directory=model_config['output_directory']
 
 def get_stat():
     filename = glob.iglob(data_directory + '/*_stat.nc').next()

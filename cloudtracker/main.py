@@ -45,7 +45,7 @@ def load_data(filename):
 
 #@profile
 def main(MC, save_all=True):
-    input_dir = MC['input_directory']
+    input_dir = MC['data_directory']
     nx = MC['nx']
     ny = MC['ny']
     nz = MC['nz']
@@ -54,7 +54,7 @@ def main(MC, save_all=True):
     cloudlet_items = ['core', 'condensed', 'plume', 'u_condensed', 'v_condensed', \
         'w_condensed', 'u_plume', 'v_plume', 'w_plume']
 
-    filelist = glob.glob('{}/*nc'.format(MC['tracking_directory']))
+    filelist = glob.glob('{}/tracking/*nc'.format(MC['data_directory']))
     pha_logger.info('inside main, filelist has {} items'.format(len(filelist)))        
     filelist.sort()
 
@@ -67,23 +67,26 @@ def main(MC, save_all=True):
     if not os.path.exists('hdf5'):
         os.mkdir('hdf5')
 
-    ## # TODO: Parallelize file access (multiprocessing) 
-    ## for n, filename in enumerate(filelist):
-    ##     print("generate cloudlets; time step: %d" % n)
-    ##     core, condensed, plume, u, v, w = load_data(filename)
+    ## # TODO: Parallelize file access (multiprocessing)
+    do_cloudlets=False
+    
+    if do_cloudlets:
+        for n, filename in enumerate(filelist):
+            print("generate cloudlets; time step: %d" % n)
+            core, condensed, plume, u, v, w = load_data(filename)
 
-    ##     cloudlets = generate_cloudlets(core, condensed, plume, u, v, w, MC)
-        
-    ##     # NOTE: cloudlet save/load works properly
-    ##     # TEST: linear calls instead of for lodop to speed this up?
-    ##     with h5py.File('hdf5/cloudlets_%08g.h5' % n, "w") as f:
-    ##         for i in range(len(cloudlets)):
-    ##             grp = f.create_group(str(i))
-    ##             for var in cloudlet_items:
-    ##                 if(var in ['core', 'condensed', 'plume']):
-    ##                     dset = grp.create_dataset(var, data=cloudlets[i][var][...])
-    ##                 else:
-    ##                     deset = grp.create_dataset(var, data=cloudlets[i][var])
+            cloudlets = generate_cloudlets(core, condensed, plume, u, v, w, MC)
+
+            # NOTE: cloudlet save/load works properly
+            # TEST: linear calls instead of for lodop to speed this up?
+            with h5py.File('{}/hdf5/cloudlets_{:08g}.h5'.format(MC['output_directory'], n), "w") as f:
+                for i in range(len(cloudlets)):
+                    grp = f.create_group(str(i))
+                    for var in cloudlet_items:
+                        if(var in ['core', 'condensed', 'plume']):
+                            dset = grp.create_dataset(var, data=cloudlets[i][var][...])
+                        else:
+                            dset = grp.create_dataset(var, data=cloudlets[i][var])
 
     ##     gc.collect() # NOTE: Force garbage-collection at the end of loop
     
@@ -93,19 +96,21 @@ def main(MC, save_all=True):
     #pdb.set_trace()
 
     # FIXME: cluster save/load does not work properly
-    #cluster_cloudlets(MC)
+    do_cluster= False
+    if do_cluster:
+        cluster_cloudlets(MC)
 
 #----graph----
 
     print("make graph")
-
+    output_dir=MC['output_directory']
     do_graph=False
     if do_graph:
         cloud_graphs, cloud_noise = make_graph(MC)
     else:
-        print('skipping make_graph')
-        with open('{}/pkl/cloud_graphs.pkl'.format(input_dir),'r') as cg,\
-             open('{}/pkl/cloud_noise.pkl'.format(input_dir),'r') as cn:
+        print('skipping make_raph')
+        with open('{}/pkl/cloud_graphs.pkl'.format(output_dir),'r') as cg,\
+             open('{}/pkl/cloud_noise.pkl'.format(output_dir),'r') as cn:
             cloud_graphs=pickle.load(cg)
             cloud_noise=pickle.load(cn)
         
